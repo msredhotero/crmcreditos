@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>Acceder | RIDERZ</title>
+    <!-- Favicon-->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap Core Css -->
+    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Waves Effect Css -->
+    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+
+    <!-- Animation Css -->
+    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="login-page">
+    <div class="login-box">
+        <div class="logo">
+           <div class="row">
+             <div class="col-md-12">
+                 <img src="imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ">
+             </div>
+           </div>
+        </div>
+        <div class="card">
+            <div class="body">
+                <form id="sign_in" method="POST">
+                     <div class="msg">Date de alta en Riderz</div>
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line emailInput">
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" required autofocus>
+
+                        </div>
+
+                     </div>
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                           <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line passInput">
+                           <input type="password" class="form-control" name="pass" id="pass" placeholder="Password" required>
+
+                        </div>
+
+                     </div>
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">account_circle</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Apellido" required>
+
+                        </div>
+
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">account_circle</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" required>
+
+                        </div>
+
+                     </div>
+
+
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">fingerprint</i>
+                        </span>
+                        <div class="form-line">
+                           <div class="col-lg-4 col-md-4 col-xs-6 col-sm-4">
+                              <select class="form-control show-tick" name="reftipodocumentos" id="reftipodocumentos">
+                                 <option value="1">DNI</option>
+                                 <option value="1">NIE</option>
+                              </select>
+                           </div>
+                           <div class="col-lg-8 col-md-8 col-xs-6 col-sm-8">
+                              <input type="text" class="form-control" name="cuit" id="cuit" placeholder="Nro" required>
+                           </div>
+
+                        </div>
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">phone</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Tel. Fijo" >
+
+                        </div>
+
+                     </div>
+
+                     <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">phone_android</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="celular" id="celular" placeholder="Tel. Movil" >
+
+                        </div>
+
+                     </div>
+
+                     <div class="input-group">
+
+                        <div class="demo-checkbox">
+                           <input type="checkbox" id="aceptaterminos" disabled checked name="aceptaterminos" class="filled-in" required/>
+                           <label for="aceptaterminos">Acepto las condiciones legales de riderzapp.es</label>
+                        </div>
+
+                        <div class="demo-checkbox">
+                           <input type="checkbox" id="subscripcion" name="subscripcion" class="filled-in" />
+                           <label for="subscripcion">Acepto subscribirme a riderzapp.es</label>
+                        </div>
+
+                     </div>
+
+
+
+
+
+                     <div class="row js-sweetalert">
+                        <div class="col-xs-7 p-t-5">
+
+                        </div>
+                        <div class="col-xs-5">
+                           <button class="btn btn-block bg-riderz waves-effect" data-type="" type="submit" id="login">REGISTRARSE</button>
+                        </div>
+                     </div>
+                     <div class="row m-t-15 m-b--20">
+                        <div class="col-xs-6">
+                           <a href="index.html">Iniciar sesión</a>
+                        </div>
+                        <div class="col-xs-6 align-right">
+
+                        </div>
+                     </div>
+               </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-riderz">
+                    <h4 class="modal-title" id="largeModalLabel">RIDERZ REGISTRO</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="">
+                      <div class="row">
+                        <h4>Te hemos enviado un correo de activación.</h4>
+                      </div>
+
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-riderz waves-effect"><a href="index.html" style="color:white; text-decoration:none;">Iniciar sesión</a></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/admin.js"></script>
+    <script src="js/pages/examples/sign-in.js"></script>
+
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+
+    <script src="js/pages/ui/dialogs.js"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+
+            $('body').keyup(function(e) {
+                if(e.keyCode == 13) {
+                    $("#login").click();
+                }
+            });
+
+            function validateDoc(value){
+
+               var validChars = 'TRWAGMYFPDXBNJZSQVHLCKET';
+               var nifRexp = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
+               var nieRexp = /^[XYZ]{1}[0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/i;
+               var str = value.toString().toUpperCase();
+
+               if (!nifRexp.test(str) && !nieRexp.test(str)) return false;
+
+               var nie = str
+               .replace(/^[X]/, '0')
+               .replace(/^[Y]/, '1')
+               .replace(/^[Z]/, '2');
+
+               var letter = str.substr(-1);
+               var charIndex = parseInt(nie.substr(0, 8)) % 23;
+
+               if (validChars.charAt(charIndex) === letter) return true;
+
+               return false;
+            }
+
+
+
+
+            $("#sign_in").submit(function(e){
+
+               e.preventDefault();
+               if ($('#sign_in')[0].checkValidity()) {
+                  if (validateDoc($("#cuit").val())) {
+                     $.ajax({
+                       data:  {email:		$("#email").val(),
+                               pass:		$("#pass").val(),
+                               apellido:		$("#apellido").val(),
+                               nombre:		$("#nombre").val(),
+                               telefono:		$("#telefono").val(),
+                               cuit:		$("#cuit").val(),
+                               reftipodocumentos: $('#reftipodocumentos').val(),
+                               celular:		$("#celular").val(),
+                               aceptaterminos:		$("#aceptaterminos").prop('checked') == true ? 1 : 0,
+                               subscripcion:		$("#subscripcion").prop('checked') == true ? 1 : 0,
+                               accion:		'registrarme'},
+                       url:   'ajax/ajax.php',
+                       type:  'post',
+                       beforeSend: function () {
+                               $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
+                               $('#login').hide();
+                       },
+                       success:  function (response) {
+
+                               if ((response == '')) {
+
+                                 $('#lgmNuevo').modal();
+                                   $('#login').hide();
+
+                               } else {
+                                   swal({
+                                       title: "Respuesta",
+                                       text: response,
+                                       type: "error",
+                                       timer: 2000,
+                                       showConfirmButton: false
+                                   });
+                                   $('#login').show();
+
+                               }
+
+                       }
+                     });
+                  } else {
+                     swal({
+                         title: "Respuesta",
+                         text: 'El Nro de Documento no es valido',
+                         type: "error",
+                         timer: 2000,
+                         showConfirmButton: false
+                     });
+                  }
+             }
+
+            });
+
+        });/* fin del document ready */
+
+    </script>
+</body>
+
+</html>

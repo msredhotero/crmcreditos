@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>Acceder | RIDERZ</title>
+    <!-- Favicon-->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap Core Css -->
+    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Waves Effect Css -->
+    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+
+    <!-- Animation Css -->
+    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body class="login-page">
+    <div class="login-box">
+        <div class="logo">
+           <div class="row">
+              <div class="col-md-12">
+                 <img src="imagenes/1PNGlogosRIDERZ.png" alt="RIDERZ">
+              </div>
+           </div>
+
+        </div>
+        <div class="card">
+            <div class="body">
+                <form id="sign_in" method="POST">
+                    <div class="msg">Recuperar Password</div>
+                    <div class="input-group">
+                       <h4>Ingrese su email para que le enviemos su password</h4>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line emailInput">
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" required autofocus>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row js-sweetalert">
+                        <div class="col-xs-8 p-t-5">
+
+                        </div>
+                        <div class="col-xs-4">
+                            <button class="btn btn-block bg-riderz waves-effect" data-type="" type="submit" id="login">ENVIAR</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-riderz">
+                    <h4 class="modal-title" id="largeModalLabel">RIDERZ RECUPERAR PASSWORD</h4>
+                </div>
+                <div class="modal-body">
+                   <div class="">
+                      <div class="row">
+                        <h4>Le enviamos un email a su casilla de correo.</h4>
+                      </div>
+
+                   </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn bg-riderz waves-effect"><a href="index.html" style="color:white; text-decoration:none;">Iniciar sesión</a></button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/admin.js"></script>
+    <script src="js/pages/examples/sign-in.js"></script>
+
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
+
+    <script src="js/pages/ui/dialogs.js"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+
+            $('body').keyup(function(e) {
+                if(e.keyCode == 13) {
+                    $("#login").click();
+                }
+            });
+
+
+            $("#sign_in").submit(function(e){
+
+                e.preventDefault();
+                if ($('#sign_in')[0].checkValidity()) {
+
+                   $.ajax({
+                       data:  {email:		$("#email").val(),
+                               accion:		'recuperar'},
+                       url:   'ajax/ajax.php',
+                       type:  'post',
+                       beforeSend: function () {
+                               $("#load").html('<img src="imagenes/load13.gif" width="50" height="50" />');
+                       },
+                       success:  function (response) {
+
+                               if (response != '') {
+
+                                   swal({
+                                       title: "Respuesta",
+                                       text: response,
+                                       type: "error",
+                                       timer: 2000,
+                                       showConfirmButton: false
+                                   });
+
+                               } else {
+                                  $('#lgmNuevo').modal();
+
+                                  $('#login').hide();
+                               }
+
+                       }
+                   });
+                }
+
+
+            });
+
+        });/* fin del document ready */
+
+    </script>
+</body>
+
+</html>
