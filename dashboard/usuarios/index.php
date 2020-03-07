@@ -124,7 +124,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 
 
-<body class="theme-blue">
+<body class="theme-orange">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
@@ -172,7 +172,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="card ">
-						<div class="header bg-blue">
+						<div class="header bg-orange">
 							<h2 style="color:white;">
 								<?php echo strtoupper($plural); ?>
 							</h2>

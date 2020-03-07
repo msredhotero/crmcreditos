@@ -13,7 +13,7 @@ function conexion() {
 	*/
 
 	$hostname = "localhost";
-	$database = "u115752684_asesores";
+	$database = "crmcreditos";
 	$username = "root";
 	$password = "";
 
