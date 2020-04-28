@@ -21,12 +21,14 @@ class ServiciosSeguridad {
 
 
 	function seguridadRuta($rol, $ruta) {
+		$query =  new Query();
 		$rol = str_replace(' ','',$rol);
 		
-		$sql = "select idmenu,url,icono, nombre, permiso from predio_menu where permiso like '%".$rol."%' and url = '".$ruta."'";
-		$res = $this->query($sql,0);
+		$sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$rol."%' and url = '".$ruta."'";		
+		$query->setQuery($sql);
+		$res = $query->eject();
 
-		if (mysql_num_rows($res)>0) {
+		if ($res->num_rows > 0) {
 			return '';
 		} else {
 			header('Location: ../../error.php');

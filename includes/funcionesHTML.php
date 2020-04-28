@@ -5,10 +5,86 @@ date_default_timezone_set('America/Mexico_City');
 
 class ServiciosHTML {
 
+function menuRed($titulo){
+	$query = new Query();
+	$usuario = new Usuario();
+	$usuario-> setUsuarioData();
+	$rol = str_replace(' ','',$rol);
+	$sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$usuario->getRol()."%' and grupo = 0 order by orden";
+	echo $sql ."<br>";
+	$query->setQuery($sql);
+	$res = $query->eject();
+	$cadmenu = "";
+	$cadhover= "";
+	$cant = 1;
+
+
+	#while($row = $res->fetch_array(MYSQLI_ASSOC)){
+	while($row = $query->fetchArray($res)){
+		if ($titulo == $row['nombre']) {
+			$nombre = $row['nombre'];
+			$row['url'] = "index.php";
+		}
+
+		if (strpos($row['permiso'],$rol) !== false) {
+			
+			$cadmenu .= '<li>
+				<a href="'.$row['url'].'">
+					<i class="material-icons">'.$row['icono'].'</i>
+						<span>'.$row['nombre'].'</span>
+				</a>
+			</li>';
+			$cant+=1;
+		}
+	}
+
+
+	$sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$rol."%' and grupo = 3 order by orden";	
+	$query->setQuery($sql);
+	$res = $query->eject();
+
+	#if ($res->num_rows > 0) {
+	if ($query->numRows($res)  > 0) {
+		$cadmenu .= '<a href="javascript:void(0);" class="menu-toggle">
+	                            <i class="material-icons">build</i>
+	                            <span>General</span>
+	                        </a>
+	                        <ul class="ml-menu">';
+		$cadhover= "";
+
+
+		$cant = 1;
+		
+		#while($row = $res->fetch_array(MYSQLI_ASSOC)){		
+		while($row = $query->fetchArray ($res)){
+			if ($titulo == $row['nombre']) {
+				$nombre = $row['nombre'];
+				$row['url'] = "index.php";
+			}
+
+			if (strpos($row['permiso'],$rol) !== false) {			
+				$cadmenu .= '<li>
+				<a href="'.$row['url'].'">
+					<i class="material-icons">'.$row['icono'].'</i>
+						<span>'.$row['nombre'].'</span>
+				</a>
+				</li>';			
+			}
+			$cant+=1;
+		}
+		$cadmenu .= '</ul>';
+	}
+	/*location_on*/
+
+
+	$menu = utf8_encode($cadmenu);
+	return $menu;
+}	
+
 function menu($usuario,$titulo,$rol,$empresa) {
 
 	$rol = str_replace(' ','',$rol);
-	$sql = "select idmenu,url,icono, nombre, permiso from predio_menu where permiso like '%".$rol."%' and grupo = 0 order by orden";
+	$sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$rol."%' and grupo = 0 order by orden";
 
 	//die(var_dump($sql));
 	$res = $this->query($sql,0);
@@ -57,7 +133,7 @@ function menu($usuario,$titulo,$rol,$empresa) {
 	}
 
 
-	$sql = "select idmenu,url,icono, nombre, permiso from predio_menu where permiso like '%".$rol."%' and grupo = 3 order by orden";
+	$sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$rol."%' and grupo = 3 order by orden";
 	$res = $this->query($sql,0);
 
 	if (mysql_num_rows($res) > 0) {
@@ -331,33 +407,23 @@ function footer() {
 
 function query($sql,$accion) {
 
-		require_once 'appconfig.php';
-
-		$appconfig	= new appconfig();
-		$datos		= $appconfig->conexion();
-		$hostname	= $datos['hostname'];
-		$database	= $datos['database'];
-		$username	= $datos['username'];
-		$password	= $datos['password'];
-
-/*		$hostname = "localhost";
-		$database = "lacalder_diablo";
-		$username = "lacalderadeldiab";
-		$password = "caldera4415";
-		*/
-
-		$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
-
-		mysql_select_db($database);
-
-		$result = mysql_query($sql,$conex);
-		if ($accion && $result) {
-			$result = mysql_insert_id();
-		}
-		mysql_close($conex);
-		return $result;
-
+	require_once 'appconfig.php';
+	$appconfig	= new appconfig();
+	$datos		= $appconfig->conexion();
+	$hostname	= $datos['hostname'];
+	$database	= $datos['database'];
+	$username	= $datos['username'];
+	$password	= $datos['password'];
+	$conex = mysql_connect($hostname,$username,$password) or die ("no se puede conectar".mysql_error());
+	mysql_select_db($database);
+	$result = mysql_query($sql,$conex);
+	if ($accion && $result) {
+		$result = mysql_insert_id();
 	}
+	mysql_close($conex);
+	return $result;
+
+}
 
 }
 

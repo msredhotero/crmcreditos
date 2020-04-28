@@ -8,6 +8,33 @@ date_default_timezone_set('America/Mexico_City');
 
 class Servicios {
 
+
+	function traerLblCambioReemplazo($tabla, $etiqueta ){
+		$lblEtiquetas = array();
+		$sql = "select ".$etiqueta." as etiqueta from tbetiquetas WHERE tabla  LIKE '".$tabla."'";
+		$result = $this-> query($sql,0);
+		while($row = mysql_fetch_array($result))  {
+			$lblEtiquetas[]= $row['etiqueta'];
+		}
+
+		return $lblEtiquetas;
+
+	}
+
+	function traerCamposParaOcultar($tabla){
+		$camposOcultar = array();
+		$sql = "select campo from tbcamposocultos WHERE tabla  LIKE '".$tabla."'";
+		$result = $this-> query($sql,0);
+		if(!$result){
+			echo $sql;
+		}
+		while($row = mysql_fetch_array($result))  {
+			$lblEtiquetas[]= $row['campo'];
+		}
+
+		return $camposOcultar;
+	}
+	
 	function generaCURP($primerApellido, $segundoApellido, $nombre, $diaNacimiento, $mesNacimiento, $anioNacimiento, $sexo, $entidadNacimiento) {
 
 		$primerApellido = urlencode($primerApellido);
@@ -47,7 +74,8 @@ class Servicios {
 	function devolverSelectBox($datos, $ar, $delimitador) {
 
 		$cad		= '';
-		while ($rowTT = mysql_fetch_array($datos)) {
+		$cad		.= '<option value="">Seleccione</option>';
+		while ($rowTT = $datos->fetch_array(MYSQLI_NUM)) {
 			$contenido	= '';
 			foreach ($ar as $i) {
 				$contenido .= $rowTT[$i].$delimitador;
@@ -441,7 +469,7 @@ class Servicios {
 				$ocultar = array("fechacrea","fechamodi","usuacrea","usuamodi","tipoimagen","utilidad","idusuario");
 				break;
 		}
-
+		#$ocultar =  $this->traerCamposParaOcultar($tabla);	
 
 		$geoposicionamiento = array("latitud","longitud");
 
@@ -2232,6 +2260,21 @@ class Servicios {
 		$sql = "";
 		$sql = "update ".$tabla." set activo = true where ".$campo." = ".$id;
 		$this-> query($sql,0);
+	}
+
+	public function obtenerFechaEnLetra($fecha){
+    $dia= $this->conocerDiaSemanaFecha($fecha);
+    $num = date("j", strtotime($fecha));
+    $anno = date("Y", strtotime($fecha));
+    $mes = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+    $mes = $mes[(date('m', strtotime($fecha))*1)-1];
+    return $dia.', '.$num.' de '.$mes.' del '.$anno;
+}
+
+	public function conocerDiaSemanaFecha($fecha) {
+    $dias = array('Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado');
+    $dia = $dias[date('w', strtotime($fecha))];
+    return $dia;
 	}
 
 

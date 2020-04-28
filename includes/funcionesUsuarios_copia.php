@@ -262,23 +262,15 @@ SELECT   cg.idcontratoglobal,cg.fecha_registro, cg.refempresaafiliada, cg.reftip
     INNER JOIN dbcontratosglobalesstatus cstatus on cg.idcontratoglobal = cstatus.refcontratoglobal 
     INNER JOIN tbstatuscontratoglobal tbstatus ON cstatus.refstatuscontratoglobal = tbstatus.idstatuscontratoglobal
     
-   # where cstatus.refstatuscontratoglobal = (SELECT max(refstatuscontratoglobal) FROM dbcontratosglobalesstatus where idcontratoglobal =  cg.idcontratoglobal)
-    #group by idcontratoglobal
-
-    #
+    where cstatus.refstatuscontratoglobal = (SELECT max(refstatuscontratoglobal) FROM dbcontratosglobalesstatus where idcontratoglobal =  cg.idcontratoglobal)
     
 
 )as r";
 
-$sql2 = "SELECT  max(cstatus.refstatuscontratoglobal), cg.idcontratoglobal,cg.fecha_registro, cg.refempresaafiliada, cg.reftipocontratoglobal
-		FROM  dbcontratosglobalesstatus cstatus  JOIN   `dbcontratosglobales` cg  on  cstatus.refcontratoglobal = cg.idcontratoglobal 
-
-		GROUP BY  cstatus.refcontratoglobal ";
-
 
 
 #echo $sql;
-	$query->setQuery($sql2);	
+	$query->setQuery($sql);	
 	$res = $query->eject(0);
 	return $res;
 }
@@ -371,38 +363,61 @@ function traerContratosajax($length, $start, $busqueda,$colSort,$colSortDir, $pe
 
 
 
-    $sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
+    $sql= "SELECT  dc.idcontratoglobal,
+    dc.empresa,
+    dc.tipo_credito,
+    dc.fecha_registro,
+    concat( dc.nombre,' ' ,dc.paterno,' ', dc.materno ) as nombre_cliente,
+    dc.curp,
+    dc.ultimo_status_contrato,
+    dc.rechazo,
+    dc.fecha_ultimo_status,
+    dc.idcontratoglobalstatus,
+    dc.refstatuscontratoglobal,
+    dc.idcontratoglobal,
+    dc.ultimo_status_contrato,
+    dc.fecha_registro,
+    dc.fecha_status,
+    dc.rechazo,
+    dc.nombre,
+    dc.paterno,
+    dc.materno,
+    dc.refusuario 
+    FROM (    
+		SELECT cg.idcontratoglobal,
 		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,
-		csg.fecha as fecha_ultimo_status , 
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
 		cg.refempresaafiliada, 
 		cg.reftipocontratoglobal, 
 		cg.nombre, 
 		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
+		cg.materno, 
+		cg.curp, 
+		cstatus.idcontratoglobalstatus,  
+		cstatus.refcontratoglobal, 
+		cstatus.refstatuscontratoglobal  , 
+		cstatus.refrechazocausa, 
+		cstatus.refusuario , 
+		cstatus.fecha as fecha_ultimo_status , 
+		afiliada.descripcion as empresa , 
+		tipoContrato.descripcion as tipo_credito, 
+		tbstatus.descripcion as ultimo_status_contrato,  
+		cstatus.fecha as fecha_status, 
+		(SELECT descripcion FROM tbrechazocausa WHERE idrechazocausa =cstatus.refrechazocausa ) as rechazo 
+    	FROM `dbcontratosglobales` cg 
+     	INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
+    	INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal    
+    	INNER JOIN dbcontratosglobalesstatus cstatus on cg.idcontratoglobal = cstatus.refcontratoglobal 
+    	INNER JOIN tbstatuscontratoglobal tbstatus ON cstatus.refstatuscontratoglobal = tbstatus.idstatuscontratoglobal
+    
+    where cstatus.refstatuscontratoglobal = (SELECT max(refstatuscontratoglobal) FROM dbcontratosglobalesstatus where idcontratoglobal =  cg.idcontratoglobal)
+    )
+    as dc
 			
          ".$where."
-      	order by ".$colSort." ".$colSortDir."";
-      	#limit ".$start.",".$length;  
-  #  echo $sql;	
-	#echo $sql;
+      	order by ".$colSort." ".$colSortDir."
+      	limit ".$start.",".$length;  
+  #  echo $sql;
+	
 	$query->setQuery($sql);
 	$res = $query->eject();
 	
