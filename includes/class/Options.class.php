@@ -77,6 +77,7 @@ class Options
 
 		if ($option_select != '') {
 			$this->option_select = $option_select;
+			#echo $this->option_select;
 		}else{
 			if($cat_nombre =='nacionalidad'  ){
 			#$this->option_select = 58;
@@ -182,20 +183,16 @@ class Options
 
 		$query->setQuery($string_query);
 		$rs = $query->eject();
+		$valorPredeterminadoArray =  array( 'nacionalidad' => 58,
+							   				'dbnacionalidades' => 223,
+							  				'tbpagoalclientecanales' => 1,
+							   				'tbpagodelclientecanales' => 1,
+							   				'tbadelantapagos' => 2,);
 
 		if($this->option_select ==''){
-
-			
-			if($this->cat_nombre =='nacionalidad'  ){
-			$this->option_select = 58;
-			
-		}
-
-		if($this->cat_nombre =='dbnacionalidades'  ){
-			$this->option_select = 223; 
-			
-		}
-
+			if(array_key_exists($this->cat_nombre, $valorPredeterminadoArray)){			
+				$this->option_select = $valorPredeterminadoArray[$this->cat_nombre];
+			}
 		}
 
 		#while ($rw = $rs->fetch_object()) {		

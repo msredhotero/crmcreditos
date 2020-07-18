@@ -75,7 +75,7 @@ class Servicios {
 
 		$cad		= '';
 		$cad		.= '<option value="">Seleccione</option>';
-		while ($rowTT = $datos->fetch_array(MYSQLI_NUM)) {
+		while ($rowTT = mysql_fetch_array($datos)) {
 			$contenido	= '';
 			foreach ($ar as $i) {
 				$contenido .= $rowTT[$i].$delimitador;
@@ -87,7 +87,11 @@ class Servicios {
 
 	function devolverSelectBoxActivo($datos, $ar, $delimitador, $idSelect) {
 
-		$cad		= '';
+		$cad = '';
+		if($idSelect =='' || is_null($idSelect)){
+			$cad		= '<option>Seleccione </option>';
+			}
+
 		while ($rowTT = mysql_fetch_array($datos)) {
 			$contenido	= '';
 			foreach ($ar as $i) {
@@ -445,7 +449,18 @@ class Servicios {
 		$res 	=	$this->query($sql,0);
 		$label  = '';
 
+		#echo $sql;
+
 		switch ($tabla) {
+
+			case 'tbrechazocausa':
+				$ocultar = array("perfil");
+				break;
+
+			case 'tbudi':
+				$ocultar = array("fecha","refusuario");
+				break;
+
 			case 'dbsolicitudes':
 				$ocultar = array("fechacrea","fechamodi","usuariocrea","usuariomodi","reftipoingreso","refusuarios","refclientes",'comision');
 				break;
@@ -487,7 +502,7 @@ class Servicios {
 
 
 		if ($res == false) {
-			return 'Error al traer datos';
+			return 'Error al traer datos'.$sql;
 		} else {
 
 			$form	=	'';
@@ -711,7 +726,7 @@ class Servicios {
 												<label for="'.$campo.'" class="control-label" style="text-align:left">'.$label.'</label>
 													<div class="form-group">
 														<div class="form-line">
-															<textarea rows="2" class="form-control no-resize" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese el '.$label.'..."></textarea>
+															<textarea rows="2" class="form-control no-resize" id="'.$campo.'" name="'.$campo.'" placeholder="Ingrese  '.$label.'..."></textarea>
 														</div>
 													</div>
 												</div>
@@ -817,6 +832,16 @@ class Servicios {
 			}
 
 			$formulario = $form."<br><br>".$camposEscondido;
+
+		
+			$fecha = date("d-m-Y");
+			switch ($tabla) {
+			case 'tbudi':				
+				$formulario =  str_replace('Descripcion','Valor de la UDI '. $fecha,$formulario);
+				break;
+			}
+
+
 
 			return $formulario;
 		}
@@ -1142,9 +1167,15 @@ class Servicios {
 	function camposTablaModificar($id,$lblid,$accion,$tabla,$lblcambio,$lblreemplazo,$refdescripcion,$refCampo) {
 
 		switch ($tabla) {
-
+			case 'rechazo':
+				$sqlMod = "SELECT
+									idrechazocausa,descripcion, perfil
+									FROM  tbrechazocausa  WHERE ".$lblid." = ".$id;
+				$resMod = $this->query($sqlMod,0);
+				$tabla = 'tbrechazocausa'; 
+				break;
 			case 'dbusuarios':
-				$sqlMod = "select
+				$sqlMod = "SELECT
 								idusuario,usuario,password,refroles,email,nombrecompleto,(case when activo = 1 then 'Si' else 'No' end) as activo
 									from ".$tabla." where ".$lblid." = ".$id;
 				$resMod = $this->query($sqlMod,0);
@@ -1196,6 +1227,8 @@ class Servicios {
 				$sqlMod = "select * from ".$tabla." where ".$lblid." = ".$id;
 				$resMod = $this->query($sqlMod,0);
 		}
+
+		#echo $sqlMod;
 		/*if ($tabla == 'dbtorneos') {
 			$resMod = $this->TraerIdTorneos($id);
 		} else {
@@ -1206,18 +1239,22 @@ class Servicios {
 		$res 	=	$this->query($sql,0);
 
 		switch ($tabla) {
-			case 'dbentrevistas':
-				$ocultar = array("fechacrea","fechamodi","usuariocrea","usuariomodi",'refestadopostulantes');
+
+			case 'tbrechazocausa':
+				$ocultar = array("perfil");
 			break;
-			case 'dbentrevistaoportunidades':
-				$ocultar = array("fechacrea","fechamodi","usuariocrea","usuariomodi","domicilio","entrevistador",'codigopostal');
+			case 'tbudi':
+				$ocultar = array("fecha","refusuario");
 			break;
-			case 'dboportunidades':
-				$ocultar = array("fechacrea","fechamodi","usuariocrea","usuariomodi",'refestadopostulantes','telefonofijo');
+
+			case 'tbriesgoindicadores':
+				$ocultar = array("tablasql");
 			break;
-			case 'dbpostulantes':
-				$ocultar = array("usuariomodi","fechacrea","fechamodi","usuariocrea","usuariomodi",'refasesores','comision','refsucursalesinbursa','ultimoestado','token');
-			break;
+			
+
+			
+
+			
 			default:
 				$ocultar = array();
 				break;
@@ -1229,16 +1266,7 @@ class Servicios {
 		$camposEscondido = "";
 		$lblObligatorio = '';
 		$valorBit = 0;
-		/* Analizar para despues */
-		/*if (count($refencias) > 0) {
-			$j = 0;
-
-			foreach ($refencias as $reftablas) {
-				$sqlTablas = "select id".$reftablas.", ".$refdescripcion[$j]." from ".$reftablas." order by ".$refdescripcion[$j];
-				$resultadoRef[$j][0] = $this->query($sqlTablas,0);
-				$resultadoRef[$j][1] = $refcampos[$j];
-			}
-		}*/
+		
 
 
 		if ($res == false) {
@@ -2272,7 +2300,7 @@ class Servicios {
 }
 
 	public function conocerDiaSemanaFecha($fecha) {
-    $dias = array('Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado');
+    $dias = array('domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado');
     $dia = $dias[date('w', strtotime($fecha))];
     return $dia;
 	}

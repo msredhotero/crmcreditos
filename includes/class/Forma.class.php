@@ -361,12 +361,12 @@ class Forma{
 	
 	
 	
-	protected function section($is_form, $inside){
+	protected function section($is_form, $inside, $id=''){
 	    $css_form = ($is_form)?' form-horizontal':'';
 	    if($is_form){
-	        return array('tag'=>'section', 'class'=>''.$css_form, 'inside'=>$inside);
+	        return array('tag'=>'section', 'class'=>''.$css_form, 'id'=>'seccion_'.$id, 'inside'=>$inside);
 	    }else{
-	        return array('tag'=>'section', 'class'=>''.$css_form, 'inside'=>$inside);
+	        return array('tag'=>'section', 'class'=>''.$css_form, 'id'=>'seccion_'.$id, 'inside'=>$inside);
 	    }
 	}
 
@@ -785,6 +785,45 @@ class Forma{
 	
 	protected function input_hidden($name, $options = array()){
 		return $this->input_text_general('hidden', $name, $options);
+	}
+	protected function muestra_descripcion($camponame,$catalogo,$campoWh, $valorWh ){
+		$query = new Query();
+		$valorCampo = '';
+		if($valorWh !='' && $valorWh != 0 ){
+			$sqlQuery = "SELECT ".$camponame." as valorCampo FROM ".$catalogo." WHERE ".$campoWh ." = ".$valorWh;
+			#echo $sqlQuery ."\n";	
+			$query->setQuery($sqlQuery);
+			$rsQ = $query->eject();
+			$objQ = $query->fetchObject($rsQ);
+			$valorCampo = $objQ->valorCampo;
+		}
+		
+		$inside[] = array(
+				'tag'=>'span', 'inside'=>array($valorCampo),
+		);		
+		$div_text = array(
+			'tag'=>'div',
+			'id'=>'div_'.$camponame,
+			'class' =>'form-line col-10',
+			'inside'=>$inside,
+		);
+		return $div_text;
+
+	}
+
+
+	protected function muestra_descripcion_val($camponame){
+		$query = new Query();
+		$valorCampo = '';	
+		$inside[] = array('tag'=>'span', 'inside'=>array($this->get_value($camponame)));		
+		$div_text = array(
+			'tag'=>'div',
+			'id'=>'div_'.$camponame,
+			'class' =>'form-line col-10',
+			'inside'=>$inside,
+		);
+		return $div_text;
+
 	}
 
 	protected function input_file($name,  $options = array()){

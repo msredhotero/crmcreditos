@@ -80,7 +80,7 @@ class Query{
 	}
 	
 	public function beginTrans(){
-		global $mysqli;
+		#global $mysqli;
 
 		$sql = $this->setQuery('BEGIN');
 		$rs = $this->eject($sql,0);
@@ -104,7 +104,7 @@ class Query{
 	}
 
 	public function commitTrans(){
-		global $mysqli;
+		#global $mysqli;
 
 		#$rs = $mysqli->commit();
 		$sql = $this->setQuery('COMMIT');
@@ -118,7 +118,7 @@ class Query{
 	}
 
 	public function rollbackTrans(){
-		global $mysqli;
+		#global $mysqli;
 			
 		#$rs = $mysqli->rollback();
 		$sql = $this->setQuery('ROLLBACK');
@@ -136,13 +136,13 @@ class Query{
 
 
 	public function eject($accion = 0){
-		global $mysqli;	
+		#global $mysqli;	
 		global $conn;
 		
 		#$rs = $mysqli->query($this->query);
 		$rs = mysql_query($this->query, $conn);
 		if(!$rs){
-			echo 'Error al ejecutar query eject 1<br />';
+			echo 'Error al ejecutar query<br />';
 			echo $this->query.'<br />';
 			#echo $mysqli->errno.'<br />';
 			echo mysql_error().'<br />';
@@ -160,7 +160,7 @@ class Query{
 
 
 	public function ejectTrans($accion = 0){
-		global $mysqli;		
+		#global $mysqli;		
 		#$rs = $mysqli->query($this->query);
 		$rs = mysql_query($this->query);
 
@@ -183,6 +183,7 @@ class Query{
 	public function selectCampo($campo, $tabla, $condicion = '' ){
 		$where =  (!empty($condicion))? " WHERE ".$condicion :'';
 		$sql = "SELECT ".$campo ." FROM  ". $tabla ." ".$where;		
+		
 		$this->setQuery($sql);
 		$result = $this->eject();
 		if(!$result){
@@ -253,12 +254,12 @@ class Query{
 		$_create .= implode(',', $fields);
 		$_create .= ') ENGINE=MyISAM DEFAULT CHARSET=utf8';
 		
-		$this->setQuery($_create);
+		#$this->setQuery($_create);
 	}
 	
 	public function table_truncate($name_table){
 		$_truncate = 'TRUNCATE TABLE `'.$name_table.'`;';
-		$this->setQuery($_truncate);
+		#$this->setQuery($_truncate);
 	}
 	
 	public function table_optimize($name_table){

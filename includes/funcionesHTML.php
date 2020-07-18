@@ -420,7 +420,7 @@ function query($sql,$accion) {
 	if ($accion && $result) {
 		$result = mysql_insert_id();
 	}
-	mysql_close($conex);
+	#mysql_close($conex);
 	return $result;
 
 }

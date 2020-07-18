@@ -8,7 +8,7 @@ $database	= $datos['database'];
 $username	= $datos['username'];
 $password	= $datos['password'];
 
-
+#print_r($datos);
 
 define("SERVIDOR_LOCAL", "http://localhost/crmcreditos.git/trunk/");
 define("SERVIDOR",   "http://financieracrea.com/esf/crmcreditos/");
@@ -31,6 +31,7 @@ if($codifica){
  $conn = mysql_connect($hostname,$username,$password);
  mysql_select_db($database);
  mysql_set_charset("utf8"); 
+ #echo "<br>". $conn."<br>";
 
  		   #mysql_connect($hostname,$username,$password) or die ("No se puede conectar con el servidor MYSQL".mysql_error());
 

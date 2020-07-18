@@ -247,16 +247,6 @@ function traerUsuario($email) {
 	return $res;
 }
 
-function traerEmailUsuario($idUsuario){
-	$query = new Query();
-	$sql = " SELECT usuario FROM usuario WHERE  usuario_id = ".$idUsuario."";
-	$query->setQuery($sql);
-	$res = $query->eject(0);
-	$objUsuario = $query->fetchobject($res);
-	return $objUsuario->usuario;
-
-}
-
 
 
 function traerContratos() {
@@ -289,46 +279,6 @@ function traerContratos() {
         INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
         left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
          INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal and lomas.mm > 1";
-
-	$query->setQuery($sql);	
-	$res = $query->eject(0);
-	return $res;
-}
-
-
-function traerContratosCliente() {
-	$query = new Query();	
-	$user = new Usuario();
-	$sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status,		
-		(case when cg.actualizacioncliente = 1 then 'Si' else 'No' end) as actualizacion, 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and (csg.refstatuscontratoglobal !=4 and csg.refstatuscontratoglobal != 7)
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal and lomas.mm > 1
-
-         WHERE cg.usuario_id =  ". 	$user->getUsuarioId();
 
 	$query->setQuery($sql);	
 	$res = $query->eject(0);
@@ -383,7 +333,7 @@ function traerContratosAbandonados() {
 			order by fecha_registro";
 
 
-	$sql2 = "SELECT cg.idcontratoglobal,
+$sql2 = "SELECT cg.idcontratoglobal,
     	afiliada.descripcion as empresa,
     	tipoContrato.descripcion as tipo_credito,
 		cg.fecha_registro, 
@@ -416,7 +366,7 @@ function traerContratosAbandonados() {
 
 
 
-	#echo $sql;
+#echo $sql;
 	$query->setQuery($sql2);	
 	$res = $query->eject(0);
 	return $res;
@@ -428,7 +378,7 @@ function traerContratosRechazados() {
 	
 
 
-	$sql2 = "SELECT cg.idcontratoglobal,
+$sql2 = "SELECT cg.idcontratoglobal,
     	afiliada.descripcion as empresa,
     	tipoContrato.descripcion as tipo_credito,
 		cg.fecha_registro, 
@@ -458,7 +408,7 @@ function traerContratosRechazados() {
 
 
 
-	#echo $sql;
+#echo $sql;
 	$query->setQuery($sql2);	
 	$res = $query->eject(0);
 	return $res;
@@ -504,53 +454,6 @@ function traerContratosPLD() {
 	return $res;
 }
 
-function traerContratosPendienteEmpleador() {
-
-	$query = new Query();	
-
-	$usuario = new Usuario();
-    $idUsuario = $usuario->getUsuarioId();
-    $condicion = 'refusuario = '. $idUsuario;
-    $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-    if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  ";
-    }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  ";
-    }
-	$sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,		
-		csg.fecha as fecha_ultimo_status,
-		cr.descripcion,		
-		(case when cg.actualizacioncliente = 1 then 'Si' else 'No' end) as actualizacion, 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and (csg.refstatuscontratoglobal like 3  )
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal and lomas.mm > 1".$where ;
-
-	$query->setQuery($sql);	
-	$res = $query->eject(0);
-	return $res;
-}
-
 function traerUsuarios() {
 	$query = new Query();
 	$sql = "select u.usuario_id,u.usuario, u.clave, r.descripcion, u.email , u.nombre, u.usuario_rol_id
@@ -571,155 +474,6 @@ function traerCatalogoRechazo() {
 	$res = $query->eject(0);
 	return $res;
 }
-
-function traerContratosRechazadosEmpresa() {
-	$query = new Query();
-	$usuario = new Usuario();
-    $idUsuario = $usuario->getUsuarioId();
-    $condicion = 'refusuario = '. $idUsuario;
-    $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-    if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  ";
-    }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  ";
-    }
-
-
-	$sql2 = "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status , 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =4 
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal ";
-
-
-
-	#echo $sql2;
-	$query->setQuery($sql2);	
-	$res = $query->eject(0);
-	return $res;
-}
-
-function traerContratosAutorizadosEmpresa() {
-	$query = new Query();
-	$usuario = new Usuario();
-    $idUsuario = $usuario->getUsuarioId();
-    $condicion = 'refusuario = '. $idUsuario;
-    $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-    if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  ";
-    }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  ";
-    }
-
-
-	$sql2 = "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status , 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =5 
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal ";
-
-
-
-	#echo $sql2;
-	$query->setQuery($sql2);	
-	$res = $query->eject(0);
-	return $res;
-}
-
-function traerContratosConfirmacionAnualEmpresa() {
-	$query = new Query();
-	$usuario = new Usuario();
-    $idUsuario = $usuario->getUsuarioId();
-    $condicion = 'refusuario = '. $idUsuario;
-    $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-    if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  ";
-    }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  ";
-    }
-
-
-	$sql2 = "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status , 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =6 
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal ";
-
-
-
-	#echo $sql2;
-	$query->setQuery($sql2);	
-	$res = $query->eject(0);
-	return $res;
-}
-
-
 
 function traerUsuariosajax($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
 	$query = new Query();
@@ -828,75 +582,9 @@ function traerContratosajax($length, $start, $busqueda,$colSort,$colSortDir, $pe
          INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal and lomas.mm > 1
 			
          ".$where."
-      	order by ".$colSort." ".$colSortDir."
-      	limit ".$start.",".$length;  
+      	order by ".$colSort." ".$colSortDir."";
+      	#limit ".$start.",".$length;  
   #  echo $sql;	
-	#echo $sql;
-	$query->setQuery($sql);
-	$res = $query->eject();
-	
-
-	return $res;
-}
-
-function traerContratosClienteajax($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
-	$query = new Query();
-	$user = new Usuario();
-    $where = '';
-    $roles = '';
-
-    if ($perfil != '') {
-     	$roles = " u.usuario_rol_id = ".$perfil." and ";
-    } else {
-     	$roles = '';
-    }
-
-	$busqueda = str_replace("'","",$busqueda);
-	if ($busqueda != '') {
-		$where = "where ".$roles." (cg.nombre like '%".$busqueda."%' or cg.paterno like '%".$busqueda."%'  or  cg.materno like '%".$busqueda."%' or afiliada.descripcion like '%".$busqueda."%' or curp like '%".$busqueda."%'  or statusC.descripcion like '%".$busqueda."%' or tipoContrato.descripcion like '%".$busqueda."%' or cg.fecha_registro like   '%".$busqueda."%'  or csg.fecha like   '%".$busqueda."%'  )
-
-		    and cg.usuario_id = ".$user->getUsuarioId()."";
-	} else {
-      
-         $where = " where cg.usuario_id = ".$user->getUsuarioId();
-      
-   }
-
-
-
-    $sql= "SELECT cg.idcontratoglobal,
-   		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 		
-		statusC.descripcion as ultimo_status,	
-		csg.fecha as fecha_ultimo_status,		
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-		cg.curp,	
-		cr.descripcion,		
-        csg.idcontratoglobalstatus,  
-		 csg.refstatuscontratoglobal,
-		csg.refrechazocausa,
-		(case when cg.actualizacioncliente = 1 then 'Si' else 'No' end) as actualizacion, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and (csg.refstatuscontratoglobal !=40 and csg.refstatuscontratoglobal != 70)
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal and lomas.mm > 0
-			
-         ".$where."
-      	order by ".$colSort." ".$colSortDir."
-      	limit ".$start.",".$length;  
-    #echo $sql;	
 	#echo $sql;
 	$query->setQuery($sql);
 	$res = $query->eject();
@@ -959,8 +647,8 @@ function traerContratosajaxIncompletos($length, $start, $busqueda,$colSort,$colS
         where tbcp.idproceso = 1 and csg.refstatuscontratoglobal = 1
 			
          ".$where."
-      	order by ".$colSort." ".$colSortDir."
-      	limit ".$start.",".$length;  
+      	order by ".$colSort." ".$colSortDir."";
+      	#limit ".$start.",".$length;  
   #  echo $sql;	
 	#echo $sql;
 	$query->setQuery($sql);
@@ -1163,80 +851,6 @@ function traerContratosPLDajax($length, $start, $busqueda,$colSort,$colSortDir, 
 	return $res;
 }
 
-function traerContratosPendienteEmpleadorajax($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
-	$query = new Query();
-    $where = '';
-    $roles = '';
-
-    if ($perfil != '') {
-     	$roles = " u.usuario_rol_id = ".$perfil." and ";
-    } else {
-     	$roles = '';
-    }
-
-	$busqueda = str_replace("'","",$busqueda);
-	if ($busqueda != '') {
-		$where = "where ".$roles." (cg.nombre like '%".$busqueda."%' or cg.paterno like '%".$busqueda."%'  or  cg.materno like '%".$busqueda."%' or afiliada.descripcion like '%".$busqueda."%' or curp like '%".$busqueda."%'  or statusC.descripcion like '%".$busqueda."%' or tipoContrato.descripcion like '%".$busqueda."%' or cg.fecha_registro like   '%".$busqueda."%'  or csg.fecha like   '%".$busqueda."%'  )";
-	} else {
-      if ($perfil != '') {
-         $where = " where u.usuario_rol_id = ".$perfil;
-      }
-   }
-
- // seleccionamos la empresa
-
-
-   $usuario = new Usuario();
-   $idUsuario = $usuario->getUsuarioId();
-   $condicion = 'refusuario = '. $idUsuario;
-   $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-   if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  ";
-   }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  ";
-   }
-
-
-    $sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,	
-		CONCAT('$',FORMAT(cg.montootorgamiento,2)),
-		cg.numeropagos,	
-		fp.descripcion,
-		statusC.descripcion as ultimo_status,		
-		csg.fecha as fecha_ultimo_status,
-		cr.descripcion,		
-		(case when cg.actualizacioncliente = 1 then 'Si' else 'No' end) as actualizacion, 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and (csg.refstatuscontratoglobal like 3  )
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal
-        INNER JOIN forma_pago fp ON cg.refformapago = fp.forma_pago_id         
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal and lomas.mm > 1
-			
-         ".$where."
-      	order by ".$colSort." ".$colSortDir."";
-      	#echo $sql;
-		$query->setQuery($sql);
-		$res = $query->eject();
-		return $res;
-}
-
 function traerCatalogoRechazoajax($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
 	$query = new Query();
     $where = '';
@@ -1270,300 +884,6 @@ function traerCatalogoRechazoajax($length, $start, $busqueda,$colSort,$colSortDi
 
 	return $res;
 }
-
-
-
-function traerContratosRechazoEmpleadorajax($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
-	$query = new Query();
-	$usuario = new Usuario();
-	$idUsuario = $usuario->getUsuarioId();
-    $where = '';
-    $roles = '';
-
-    if ($perfil != '') {
-     	$roles = " u.usuario_rol_id = ".$perfil." and ";
-    } else {
-     	$roles = '';
-    }
-
-	$busqueda = str_replace("'","",$busqueda);
-	if ($busqueda != '') {
-		$where = "where ".$roles." (cg.nombre like '%".$busqueda."%' or cg.paterno like '%".$busqueda."%'  or  cg.materno like '%".$busqueda."%' or afiliada.descripcion like '%".$busqueda."%' or curp like '%".$busqueda."%'  or statusC.descripcion like '%".$busqueda."%' or tipoContrato.descripcion like '%".$busqueda."%' or cg.fecha_registro like   '%".$busqueda."%'  or csg.fecha like   '%".$busqueda."%'  )";
-	} else {
-      if ($perfil != '') {
-         $where = " where u.usuario_rol_id = ".$perfil;
-      }
-   }
-
-
-   $condicion = 'refusuario = '. $idUsuario;
-   $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-   if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  ";
-   }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  ";
-   }
-    $sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status , 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =4 
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal 
-			
-         ".$where."
-      	order by ".$colSort." ".$colSortDir."";
-      	#limit ".$start.",".$length;  
-    echo $sql;	
-	#echo $sql;
-	$query->setQuery($sql);
-	$res = $query->eject();
-	
-
-	return $res;
-}
-
-function traerContratosajaxRechazadosEmpresa($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
-	$query = new Query();
-	$usuario = new Usuario();
-	$idUsuario = $usuario->getUsuarioId();
-    $where = '';
-    $roles = '';
-
-    if ($perfil != '') {
-     	$roles = " u.usuario_rol_id = ".$perfil." and ";
-    } else {
-     	$roles = '';
-    }
-
-	$busqueda = str_replace("'","",$busqueda);
-	if ($busqueda != '') {
-		$where = "where ".$roles." (cg.nombre like '%".$busqueda."%' or cg.paterno like '%".$busqueda."%'  or  cg.materno like '%".$busqueda."%' or afiliada.descripcion like '%".$busqueda."%' or curp like '%".$busqueda."%'  or statusC.descripcion like '%".$busqueda."%' or tipoContrato.descripcion like '%".$busqueda."%' or cg.fecha_registro like   '%".$busqueda."%'  or csg.fecha like   '%".$busqueda."%'  )";
-	} else {
-      if ($perfil != '') {
-         $where = " where u.usuario_rol_id = ".$perfil;
-      }
-   }
-
-
-   $condicion = 'refusuario = '. $idUsuario;
-   $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-   if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  AND   cr.perfil=2";
-   }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  AND cr.perfil=2 ";
-   }
-
-
-
-    $sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status , 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =4 
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal 
-			
-         ".$where."
-      	order by ".$colSort." ".$colSortDir."";
-      	#limit ".$start.",".$length;  
-  #  echo $sql;	
-	#echo $sql;
-	$query->setQuery($sql);
-	$res = $query->eject();
-	
-
-	return $res;
-}
-
-
-function traerContratosajaxAutorizadosEmpresa($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
-	$query = new Query();
-	$usuario = new Usuario();
-	$idUsuario = $usuario->getUsuarioId();
-    $where = '';
-    $roles = '';
-
-    if ($perfil != '') {
-     	$roles = " u.usuario_rol_id = ".$perfil." and ";
-    } else {
-     	$roles = '';
-    }
-
-	$busqueda = str_replace("'","",$busqueda);
-	if ($busqueda != '') {
-		$where = "where ".$roles." (cg.nombre like '%".$busqueda."%' or cg.paterno like '%".$busqueda."%'  or  cg.materno like '%".$busqueda."%' or afiliada.descripcion like '%".$busqueda."%' or curp like '%".$busqueda."%'  or statusC.descripcion like '%".$busqueda."%' or tipoContrato.descripcion like '%".$busqueda."%' or cg.fecha_registro like   '%".$busqueda."%'  or csg.fecha like   '%".$busqueda."%'  )";
-	} else {
-      if ($perfil != '') {
-         $where = " where u.usuario_rol_id = ".$perfil;
-      }
-   }
-
-
-   $condicion = 'refusuario = '. $idUsuario;
-   $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-   if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId." ";
-   }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId." ";
-   }
-
-
-
-    $sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		
-		csg.fecha as fecha_ultimo_status ,
-		cr.descripcion, 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =5
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal 
-			
-         ".$where."
-      	order by ".$colSort." ".$colSortDir."";
-      	#limit ".$start.",".$length;  
-  #  echo $sql;	
-	#echo $sql;
-	$query->setQuery($sql);
-	$res = $query->eject();
-	
-
-	return $res;
-}
-
-function traerContratosajaxConfirmacionAnualEmpresa($length, $start, $busqueda,$colSort,$colSortDir, $perfil) {
-	$query = new Query();
-	$usuario = new Usuario();
-	$idUsuario = $usuario->getUsuarioId();
-    $where = '';
-    $roles = '';
-
-    if ($perfil != '') {
-     	$roles = " u.usuario_rol_id = ".$perfil." and ";
-    } else {
-     	$roles = '';
-    }
-
-	$busqueda = str_replace("'","",$busqueda);
-	if ($busqueda != '') {
-		$where = "where ".$roles." (cg.nombre like '%".$busqueda."%' or cg.paterno like '%".$busqueda."%'  or  cg.materno like '%".$busqueda."%' or afiliada.descripcion like '%".$busqueda."%' or curp like '%".$busqueda."%'  or statusC.descripcion like '%".$busqueda."%' or tipoContrato.descripcion like '%".$busqueda."%' or cg.fecha_registro like   '%".$busqueda."%'  or csg.fecha like   '%".$busqueda."%'  )";
-	} else {
-      if ($perfil != '') {
-         $where = " where u.usuario_rol_id = ".$perfil;
-      }
-   }
-
-
-   $condicion = 'refusuario = '. $idUsuario;
-   $empresaId =  $query->selectCampo('idempresaafiliada', 'tbempresaafiliada', $condicion);
-   if($where ==''){
-   		$where = " WHERE cg.refempresaafiliada  like ".$empresaId."  AND   cr.perfil=2";
-   }else{
-   		$where .=" AND cg.refempresaafiliada  like ".$empresaId."  AND cr.perfil=2 ";
-   }
-
-
-
-    $sql= "SELECT cg.idcontratoglobal,
-    	afiliada.descripcion as empresa,
-    	tipoContrato.descripcion as tipo_credito,
-		cg.fecha_registro, 
-		concat( cg.nombre,' ' ,cg.paterno,' ', cg.materno ) as nombre_cliente,
-		cg.curp,		
-		statusC.descripcion as ultimo_status,
-		cr.descripcion,
-		csg.fecha as fecha_ultimo_status , 
-		cg.refempresaafiliada, 
-		cg.reftipocontratoglobal, 
-		cg.nombre, 
-		cg.paterno, 
-		cg.materno,
-        csg.idcontratoglobalstatus,  
-		csg.refstatuscontratoglobal, 
-		csg.refrechazocausa, 
-		csg.refusuario ,	
-        a.maximo     
-		FROM (SELECT max(idcontratoglobalstatus) as maximo, refcontratoglobal, refstatuscontratoglobal from dbcontratosglobalesstatus GROUP BY refcontratoglobal) as a
-		inner join dbcontratosglobales as cg on cg.idcontratoglobal = a.refcontratoglobal 
-		inner join dbcontratosglobalesstatus as csg on csg.idcontratoglobalstatus = a.maximo and csg.refstatuscontratoglobal =6
-        INNER join tbempresaafiliada afiliada ON cg.refempresaafiliada = afiliada.idempresaafiliada
-        INNER join tbtipocontratoglobal tipoContrato on cg.reftipocontratoglobal = tipoContrato.idtipocontratoglobal
-        INNER join tbstatuscontratoglobal statusC on csg.refstatuscontratoglobal = statusC.idstatuscontratoglobal        
-        left join tbrechazocausa as cr on  cr.idrechazocausa = csg.refrechazocausa
-         INNER JOIN (SELECT max(`refproceso`) as mm, refcontratoglobal , fecha as fecha_proceso FROM `dbcontratosglobalesprocesos` GROUP by refcontratoglobal) as lomas ON lomas.refcontratoglobal = cg.idcontratoglobal 
-			
-         ".$where."
-      	order by ".$colSort." ".$colSortDir."";
-      	#limit ".$start.",".$length;  
-  #  echo $sql;	
-	#echo $sql;
-	$query->setQuery($sql);
-	$res = $query->eject();
-	
-
-	return $res;
-}
-
 
 function traerUsuariosSimple() {
 	$query = new Query();
@@ -1686,7 +1006,7 @@ function enviarEmail($destinatario,$asunto,$cuerpo, $referencia='') {
    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
    //dirección del remitente
-   $headers .= utf8_decode("From: Financiera CREA <consulta@financieracrea.com>\r\n");
+   $headers .= utf8_decode("From: FINANCIERA CREA <consulta@financieracrea.com>\r\n");
   # echo "entra a envio mail";
 	mail($destinatario,$asunto,$cuerpo,$headers);
 }

@@ -116,9 +116,7 @@ class Query{
 
 
 	public function eject($accion = 0){
-		global $mysqli;
-		
-		
+		global $mysqli;	
 		$rs = $mysqli->query($this->query);
 		if(!$rs){
 			echo 'Error al ejecutar query eject<br />';
@@ -128,10 +126,8 @@ class Query{
 			die();
 		}else if($accion && $rs) {
 			$Id = $mysqli->insert_id;
-
 			return $Id;
-		}else{
-			echo "NO 	ACTION";
+		}else{			
 			return $rs;
 		}
 	}

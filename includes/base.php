@@ -28,8 +28,7 @@ class BaseHTML extends ServiciosNotificaciones {
         $this->cargaMainSideBar($usuario);
         $this->cargaControlSideBar($usuario);
         $this->cargaFooter();
-        $this->cargarArchivosJavaScriptAdminLTE();        
-
+        $this->cargarArchivosJavaScriptAdminLTE();
     }
 
     public function getNavBar (){
@@ -241,10 +240,10 @@ private function contentHeader($h1, $breadcrumb_items){
   <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-          <div class="col-sm-6">
+          <div class="col-sm-8">
             <h3 class="">'.$h1.'</h3>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <ol class="breadcrumb float-sm-right">'.
             $cadenaBreadCrumb.'              
             </ol>
@@ -265,6 +264,8 @@ private function contentHeader($h1, $breadcrumb_items){
                     3=>'<script src="'.DIR_LOCAL.'AdminLTE/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>',
                     4=>'<script src="'.DIR_LOCAL.'AdminLTE/dist/js/adminlte.min.js"></script>',
                     5=>'<script src="'.DIR_LOCAL.'plugins/sweetalert/sweetalert.min.js"></script>',
+                    6=>'<script src="'.DIR_LOCAL.'AdminLTE/plugins/jQuery/jquery.numeric.min.js"></script>',
+                   
                     );
 
     
@@ -321,7 +322,7 @@ private function menuRed(){
     $query = new Query();
   $sql = "select idmenu,url,icono, nombre, permiso from menu where permiso like '%".$usuario->getRol()."%' and grupo = 0 order by orden";
  
-  $res = $this->queries($sql,0);
+  #$res = $this->queries($sql,0);
   
   
  
@@ -399,7 +400,7 @@ private function menuRed(){
   /*location_on*/
 
 
-  $menu = utf8_encode($cadmenu);
+  $menu = ($cadmenu);
   return $menu;
 }   
 
@@ -455,26 +456,16 @@ private function cargaMainSideBar($usuario){
                 <!-- Add icons to the links using the .nav-icon . clas with font-awesome or any other icon font library -->
                 <li class="nav-item has-treeview menu-open">
                         <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            
                                 <p>Menu
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                         </a>
-                        <ul class="nav nav-treeview">
-                          '.$this-> menuRed().'
-                        </ul>
+                        
                 </li>
                  '.$this-> menuRed().'
 
-                <li class="nav-item">
-                    <a href="../widgets.html" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>
-                            Widgets
-                            <span class="right badge badge-danger">New</span>
-                        </p>
-                    </a>
-                </li>
+                
                 
                     
                        
