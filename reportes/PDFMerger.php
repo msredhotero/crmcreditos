@@ -93,7 +93,8 @@ class PDFMerger
 		{
 			$filename  = $file[0];
 			$filepages = $file[1];
-
+			#SDS
+			#echo "file name => ". $filename."<p>";
 			$count = $fpdi->setSourceFile($filename);
 
 			//add the pages
