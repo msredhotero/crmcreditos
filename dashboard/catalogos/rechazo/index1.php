@@ -2,25 +2,23 @@
 session_start();
 if (!isset($_SESSION['usua_sahilices']))
 {
-	//header('Location: ../../error.php');
-	
+  header('Location: ../../../error.php');
 } else {
-	
-
-include '../../class_include.php';
+include ('../../../class_include.php');	
 
 
-
-$serviciosFunciones 	= new Servicios();
+#echo "conexion =>".$conn;
 $serviciosUsuario 		= new ServiciosUsuarios();
+$serviciosFunciones 	= new Servicios();
 $serviciosHTML 			= new ServiciosHTML();
 $serviciosReferencias 	= new ServiciosReferencias();
 $baseHTML = new BaseHTML();
 
 
+
 //*** SEGURIDAD ****/
-include ('../../includes/funcionesSeguridad.php');
-$serviciosSeguridad = new ServiciosSeguridad();
+#include ('../../../includes/funcionesSeguridad.php');
+#$serviciosSeguridad = new ServiciosSeguridad();
 //$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../usuarios/');
 //*** FIN  ****/
 
@@ -42,26 +40,29 @@ $plural = "Usuarios";
 
 $eliminar = "eliminarUsuarios";
 
-$insertar = "insertarUsuarios";
+$insertar = "insertarRechazo";
 
-$modificar = "modificarUsuario";
+$modificar = "modificarRechazo";
 
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
-$tabla 			= "dbusuarios";
+$tabla 			= "tbrechazocausa";
 
-$lblCambio	 	= array('nombrecompleto','refroles');
-$lblreemplazo	= array('Nombre Completo','Perfil');
+$lblCambio	 	= array();
+$lblreemplazo	= array();
 
 
 
 if ($_SESSION['idroll_sahilices'] == 1) {
 	$resRoles 	= $serviciosUsuario->traerRoles();
+
 } else {
 	$resRoles 	= $serviciosUsuario->traerRolesSimple();
 }
+
+#print_r($resRoles);
 
 $cadRef2 = $serviciosFunciones->devolverSelectBox($resRoles,array(1),'');
 
@@ -87,10 +88,10 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
-	<?php echo $baseHTML->cargarArchivosCSS('../../'); ?>
+	<?php echo $baseHTML->cargarArchivosCSS('../../../'); ?>
 
-	<link href="../../plugins/waitme/waitMe.css" rel="stylesheet" />
-	<link href="../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+	<link href="../../../plugins/waitme/waitMe.css" rel="stylesheet" />
+	<link href="../../../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
 	<!-- VUE JS -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -101,16 +102,16 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	<script src="https://unpkg.com/vue-swal"></script>
 
 	<!-- Bootstrap Material Datetime Picker Css -->
-	<link href="../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+	<link href="../../../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
 
 	<!-- Dropzone Css -->
-	<link href="../../plugins/dropzone/dropzone.css" rel="stylesheet">
+	<link href="../../../plugins/dropzone/dropzone.css" rel="stylesheet">
 
 
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/dataTables.jqueryui.min.css">
-	<link rel="stylesheet" href="../../DataTables/DataTables-1.10.18/css/jquery.dataTables.css">
+	<link rel="stylesheet" href="../../../DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="../../../DataTables/DataTables-1.10.18/css/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="../../../DataTables/DataTables-1.10.18/css/dataTables.jqueryui.min.css">
+	<link rel="stylesheet" href="../../../DataTables/DataTables-1.10.18/css/jquery.dataTables.css">
 
 	<style>
 		.alert > i{ vertical-align: middle !important; }
@@ -155,9 +156,9 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 </div>
 <!-- #END# Search Bar -->
 <!-- Top Bar -->
-<?php echo $baseHTML->cargarNAV($breadCumbs); ?>
+<?php // echo $baseHTML->cargarNAV($breadCumbs); ?>
 <!-- #Top Bar -->
-<?php echo $baseHTML->cargarSECTION($_SESSION['usua_sahilices'], $_SESSION['nombre_sahilices'], $resMenu,'../../'); ?>
+<?php //echo $baseHTML->cargarSECTION($_SESSION['usua_sahilices'], $_SESSION['nombre_sahilices'], $resMenu,'../../'); ?>
 
 <section class="content" style="margin-top:-75px;">
 
@@ -167,7 +168,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			<div class="row">
 
 
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
 					<div class="card ">
 						<div class="header bg-orange">
 							<h2 style="color:white;">
@@ -188,7 +189,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 							<form class="form" id="formCountry">
 
 								<div class="row">
-									<div class="col-lg-12 col-md-12">
+									<div class="col-lg-6 col-md-6">
 										<div class="button-demo">
 											<button type="button" class="btn bg-light-green waves-effect btnNuevo" data-toggle="modal" data-target="#lgmNuevo">
 												<i class="material-icons">add</i>
@@ -205,21 +206,17 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 									<table id="example" class="display table " style="width:100%">
 										<thead>
 											<tr>
-												<th>Usuario</th>
-												<th></th>
-												<th>Email</th>
-												<th>Nombre Completo</th>
-												<th>Activo</th>
+												<th>Id</th>
+												<th>Causa de rechazo</th>
+												
 												<th>Acciones</th>
 											</tr>
 										</thead>
 										<tfoot>
 											<tr>
-												<th>Usuario</th>
-												<th class="perfilS">Perfil</th>
-												<th>Email</th>
-												<th>Nombre Completo</th>
-												<th>Activo</th>
+												<th>Id</th>
+												<th>Causa de rechazo</th>
+												
 												<th>Acciones</th>
 											</tr>
 										</tfoot>
@@ -303,21 +300,21 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		</form>
 
 
-<?php echo $baseHTML->cargarArchivosJS('../../'); ?>
+<?php echo $baseHTML->cargarArchivosJS('../../../'); ?>
 <!-- Wait Me Plugin Js -->
-<script src="../../plugins/waitme/waitMe.js"></script>
+<script src="../../../plugins/waitme/waitMe.js"></script>
 
 <!-- Custom Js -->
-<script src="../../js/pages/cards/colored.js"></script>
+<script src="../../../js/pages/cards/colored.js"></script>
 
-<script src="../../plugins/jquery-validation/jquery.validate.js"></script>
+<script src="../../../plugins/jquery-validation/jquery.validate.js"></script>
 
-<script src="../../js/pages/examples/sign-in.js"></script>
+<script src="../../../js/pages/examples/sign-in.js"></script>
 
 <!-- Bootstrap Material Datetime Picker Plugin Js -->
-<script src="../../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+<script src="../../../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
 
-<script src="../../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
+<script src="../../../DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js"></script>
 
 
 <script>
@@ -325,7 +322,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 		var table = $('#example').DataTable({
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "../../json/jstablasajax.php?tabla=usuarios",
+			"sAjaxSource": "../../../json/jstablasajax.php?tabla=rechazo",
 			"language": {
 				"emptyTable":     "No hay datos cargados",
 				"info":           "Mostrar _START_ hasta _END_ del total de _TOTAL_ filas",
@@ -372,11 +369,11 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 		function frmAjaxModificar(id) {
 			$.ajax({
-				url: '../../ajax/ajax.php',
+				url: '../../../ajax/ajax.php',
 				type: 'POST',
 				// Form data
 				//datos del formulario
-				data: {accion: 'frmAjaxModificar',tabla: '<?php echo $tabla; ?>', id: id},
+				data: {accion: 'frmAjaxModificar',tabla: 'rechazo', id: id},
 				//mientras enviamos el archivo
 				beforeSend: function(){
 					$('.frmAjaxModificar').html('');
@@ -528,7 +525,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			var message = "";
 			//hacemos la petición ajax
 			$.ajax({
-				url: '../../ajax/ajax.php',
+				url: '../../../ajax/ajax.php',
 				type: 'POST',
 				// Form data
 				//datos del formulario
@@ -584,7 +581,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			var message = "";
 			//hacemos la petición ajax
 			$.ajax({
-				url: '../../ajax/ajax.php',
+				url: '../../../ajax/ajax.php',
 				type: 'POST',
 				// Form data
 				//datos del formulario

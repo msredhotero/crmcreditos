@@ -1,15 +1,21 @@
 <?php
+
+
 session_start();
+
 if (!isset($_SESSION['usua_sahilices']))
 {
-	//header('Location: ../../error.php');
-	
+	header('Location: ../../error.php');
 } else {
-	
-
-include '../../class_include.php';
 
 
+include ('../../includes/funciones.php');
+include ('../../includes/funcionesUsuarios.php');
+include ('../../includes/funcionesHTML.php');
+include ('../../includes/funcionesReferencias.php');
+include ('../../includes/base.php');
+include ('../../includes/funcionesForma.php');
+include ('../../includes/funcionesSolicitudes.php');
 
 $serviciosFunciones 	= new Servicios();
 $serviciosUsuario 		= new ServiciosUsuarios();
@@ -17,11 +23,15 @@ $serviciosHTML 			= new ServiciosHTML();
 $serviciosReferencias 	= new ServiciosReferencias();
 $baseHTML = new BaseHTML();
 
+$serviciosSolicitud = new ServiciosSolicitudes();
+$serviciosForma 	= new ServiciosForma();
+
+
 
 //*** SEGURIDAD ****/
 include ('../../includes/funcionesSeguridad.php');
 $serviciosSeguridad = new ServiciosSeguridad();
-//$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../usuarios/');
+$serviciosSeguridad->seguridadRuta($_SESSION['refroll_sahilices'], '../usuarios/');
 //*** FIN  ****/
 
 $fecha = date('Y-m-d');
@@ -29,7 +39,7 @@ $fecha = date('Y-m-d');
 //$resProductos = $serviciosProductos->traerProductosLimite(6);
 $resMenu = $serviciosHTML->menu($_SESSION['nombre_sahilices'],"Usuarios",$_SESSION['refroll_sahilices'],$_SESSION['email_sahilices']);
 
-$configuracion = $serviciosReferencias->traerConfiguracion();
+$configuracion = $serviciosReferencias->traerConfiguracion(); // datos de financieraCrea
 
 $tituloWeb = mysql_result($configuracion,0,'sistema');
 
@@ -37,21 +47,15 @@ $breadCumbs = '<a class="navbar-brand" href="../index.php">Dashboard</a>';
 
 /////////////////////// Opciones pagina ///////////////////////////////////////////////
 $singular = "Usuario";
-
 $plural = "Usuarios";
-
 $eliminar = "eliminarUsuarios";
-
 $insertar = "insertarUsuarios";
-
 $modificar = "modificarUsuario";
-
 //////////////////////// Fin opciones ////////////////////////////////////////////////
 
 
 /////////////////////// Opciones para la creacion del formulario  /////////////////////
 $tabla 			= "dbusuarios";
-
 $lblCambio	 	= array('nombrecompleto','refroles');
 $lblreemplazo	= array('Nombre Completo','Perfil');
 
@@ -69,7 +73,34 @@ $refdescripcion = array(0 => $cadRef2);
 $refCampo 	=  array('refroles');
 
 $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
-//////////////////////////////////////////////  FIN de los opciones //////////////////////////
+//////////////////////////////////////////////  FIN de las opciones //////////////////////////
+
+//////////////////////////////////////////SOLCITUD ///////////////////////////////////////////
+
+$tabla = "dbsolicitudes";
+
+$lblCambio = $serviciosFunciones->traerLblCambioReemplazo('dbsolicitudes','lblCambio');
+$lblreemplazo = $serviciosFunciones->traerLblCambioReemplazo('dbsolicitudes','lblreemplazo');
+
+ 
+if ($_SESSION['idroll_sahilices'] == 1) {
+	$resRoles 	= $serviciosUsuario->traerRoles();
+} else {
+	$resRoles 	= $serviciosUsuario->traerRolesSimple();
+}
+
+#echo "resRoles";
+#print_r($resRoles);
+
+$cadRef2 = $serviciosFunciones->devolverSelectBox($resRoles,array(1),'');
+
+$refdescripcion = array(0 => $cadRef2);
+$refCampo 	=  array('refroles');
+
+$frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$lblCambio,$lblreemplazo,$refdescripcion,$refCampo);
+
+$frmAltaSolcitud = $serviciosSolicitud->generaFormAltaCliente($serviciosFunciones);
+/////////////////////////////////////////////////////////////////////////////////////////
 
 ?>
 
@@ -121,7 +152,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 
 
-<body class="theme-orange">
+<body class="theme-red">
 
 <!-- Page Loader -->
 <div class="page-loader-wrapper">
@@ -159,30 +190,153 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 <!-- #Top Bar -->
 <?php echo $baseHTML->cargarSECTION($_SESSION['usua_sahilices'], $_SESSION['nombre_sahilices'], $resMenu,'../../'); ?>
 
-<section class="content" style="margin-top:-75px;">
+<section class="content" style="margin-top:-25px;">
 
 	<div class="container-fluid">
 		<div class="row clearfix">
+		
+		
+	   
 
-			<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="card">
+						<div class="headerformulario font-26">
+							<?php echo strtoupper($plural); ?>
+								
+						
+							
+						</div>
+						
+	<div class="card-content">
+	  <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+	</div>
+	<div class="card-tabs">
+	  <ul class="tabs tabs-fixed-width">
+		<li class="tab"><a href="#test4">Test 1</a></li>
+		<li class="tab"><a class="active" href="#test5">Test 2</a></li>
+		<li class="tab"><a href="#test6">Test 3</a></li>
+	  </ul>
+	</div>
+	<div class="card-content grey lighten-4">
+	  <div id="test4">Test 1</div>
+	  <div id="test5">Test 2</div>
+	  <div id="test6">Test 3</div>
+	</div>
 
+  
+						
+						
+						
+						
+						
+						
+						
+					 </div>
+			 </div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			 <div class="panel-group">
+				<DIV class="panel-col-red">
+			 <div class="panel-title">TITULO</div>
+			 <div class="panel-body">
+				este es el cuerpo de panel body tiene la consfiguracion del cuerpo rojo
 
+			 </div>
+			 </DIV> 
+			 </div>
+		 </div>
+
+		 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			 <div class="panel-group">
+				<div class="panel">
+				<div class="panel-success">
+					<div class="panel-title">
+						<div class="panel-heading"> header del panel</div>
+					</div>
+					
+					<div class="panel-body"> este es el cuerpo del panel</div>
+					<div></div>
+				</div>
+			 </div>
+			 </div>
+		 </div>
+		  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			 <div class="panel-group">
+				
+				<div class="panel-success">
+					<div class="panel-title">
+						<div class="panel-heading"> header del panel</div>
+					</div>
+					
+					<div class="panel-body"> este es el cuerpo del panel</div>
+					<div></div>
+				</div>
+			 
+			 </div>
+		 </div>
+		 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			<div class="full-body">
+				<div class="panel-col-red">
+					<div  class="panel-body"> cuerpo del panel full body</div>
+				</div>
+			</div>
+		 </div>
+		 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			<div class="badge">
+				<div class="list-group">
+				<a href="#!" class="list-group-item"><span class="badge">1</span>Alan</a>
+	<a href="#!" class="list-group-item-danger"><span class="new badge">4</span>Alan</a>
+	<a href="#!" class="list-group-item">Alan</a>
+	<a href="#!" class="list-group-item"><span class="badge">14</span>Alan</a>
+  </div>
+				
+			</div>
+		 </div>
+
+		 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+		<div class="panel-group">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Panel with panel-default class</div>
+      <div class="panel-body">Panel Content</div>
+    </div>
+</div ></div>
+<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+	<div class="card">
+		<ul class="nav nav-tabs">
+		  <li class="active"><a href="#">Home</a></li>
+		  <li><a href="#">Menu 1</a></li>
+		  <li><a href="#">Menu 2</a></li>
+		  <li><a href="#">Menu 3</a></li>
+		</ul>
+	</div>
+</div>
+			<form class="formulario" role="form" id="sign_in">
+				<div class="form">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+						<div class="card">
+							<div class="headerformulario">
+								Solicitudes			
+							</div>
+							<div class="body table-responsive">							
+								<div class="form-group">
+									<?php echo $frmAltaSolcitud; ?>
+										
+								</div>
+								
+
+							</div>
+						</div>
+					</div>	
+				</div>
+		</form>
+
+ 				<div class="form">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<div class="card ">
-						<div class="header bg-orange">
-							<h2 style="color:white;">
-								<?php echo strtoupper($plural); ?>
-							</h2>
-							<ul class="header-dropdown m-r--5">
-								<li class="dropdown">
-									<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-										<i class="material-icons">more_vert</i>
-									</a>
-									<ul class="dropdown-menu pull-right">
-
-									</ul>
-								</li>
-							</ul>
+					<div class="card">
+						<div class="headerformulario">
+							<?php echo strtoupper($plural); ?>
+								
+						
+							
 						</div>
 						<div class="body table-responsive">
 							<form class="form" id="formCountry">
@@ -231,7 +385,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
 	</div>
 </section>
 
@@ -239,20 +393,20 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 <!-- NUEVO -->
 	<form class="formulario" role="form" id="sign_in">
 	   <div class="modal fade" id="lgmNuevo" tabindex="-1" role="dialog">
-	       <div class="modal-dialog modal-lg" role="document">
-	           <div class="modal-content">
-	               <div class="modal-header">
-	                   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
-	               </div>
-	               <div class="modal-body">
-	                  <?php echo $frmUnidadNegocios; ?>
-	               </div>
-	               <div class="modal-footer">
-	                   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
-	                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-	               </div>
-	           </div>
-	       </div>
+		   <div class="modal-dialog modal-lg" role="document">
+			   <div class="modal-content">
+				   <div class="modal-header">
+					   <h4 class="modal-title" id="largeModalLabel">CREAR <?php echo strtoupper($singular); ?></h4>
+				   </div>
+				   <div class="modal-body">
+					  <?php echo $frmUnidadNegocios; ?>
+				   </div>
+				   <div class="modal-footer">
+					   <button type="submit" class="btn btn-primary waves-effect nuevo">GUARDAR</button>
+					   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+				   </div>
+			   </div>
+		   </div>
 	   </div>
 		<input type="hidden" id="accion" name="accion" value="<?php echo $insertar; ?>"/>
 	</form>
@@ -260,20 +414,20 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	<!-- MODIFICAR -->
 		<form class="formulario" role="form" id="sign_in">
 		   <div class="modal fade" id="lgmModificar" tabindex="-1" role="dialog">
-		       <div class="modal-dialog modal-lg" role="document">
-		           <div class="modal-content">
-		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
-		               </div>
-		               <div class="modal-body frmAjaxModificar">
+			   <div class="modal-dialog modal-lg" role="document">
+				   <div class="modal-content">
+					   <div class="modal-header">
+						   <h4 class="modal-title" id="largeModalLabel">MODIFICAR <?php echo strtoupper($singular); ?></h4>
+					   </div>
+					   <div class="modal-body frmAjaxModificar">
 
-		               </div>
-		               <div class="modal-footer">
-		                   <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
-		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-		               </div>
-		           </div>
-		       </div>
+					   </div>
+					   <div class="modal-footer">
+						   <button type="button" class="btn btn-warning waves-effect modificar">MODIFICAR</button>
+						   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+					   </div>
+				   </div>
+			   </div>
 		   </div>
 			<input type="hidden" id="accion" name="accion" value="<?php echo $modificar; ?>"/>
 		</form>
@@ -282,25 +436,26 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 	<!-- ELIMINAR -->
 		<form class="formulario" role="form" id="sign_in">
 		   <div class="modal fade" id="lgmEliminar" tabindex="-1" role="dialog">
-		       <div class="modal-dialog modal-lg" role="document">
-		           <div class="modal-content">
-		               <div class="modal-header">
-		                   <h4 class="modal-title" id="largeModalLabel">ELIMINAR <?php echo strtoupper($singular); ?></h4>
-		               </div>
-		               <div class="modal-body">
+			   <div class="modal-dialog modal-lg" role="document">
+				   <div class="modal-content">
+					   <div class="modal-header">
+						   <h4 class="modal-title" id="largeModalLabel">ELIMINAR <?php echo strtoupper($singular); ?></h4>
+					   </div>
+					   <div class="modal-body">
 										 <p>¿Esta seguro que desea eliminar el registro?</p>
 										 <small>* Si este registro esta relacionado con algun otro dato no se podría eliminar.</small>
-		               </div>
-		               <div class="modal-footer">
-		                   <button type="button" class="btn btn-danger waves-effect eliminar">ELIMINAR</button>
-		                   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
-		               </div>
-		           </div>
-		       </div>
+					   </div>
+					   <div class="modal-footer">
+						   <button type="button" class="btn btn-danger waves-effect eliminar">ELIMINAR</button>
+						   <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CERRAR</button>
+					   </div>
+				   </div>
+			   </div>
 		   </div>
 			<input type="hidden" id="accion" name="accion" value="<?php echo $eliminar; ?>"/>
 			<input type="hidden" name="ideliminar" id="ideliminar" value="0">
 		</form>
+
 
 
 <?php echo $baseHTML->cargarArchivosJS('../../'); ?>
@@ -521,10 +676,63 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			$('#lgmModificar').modal();
 		});//fin del boton modificar
 
+		$('.nuevaSolcitud').click(function(){
+			// jalamos la informacion del formulario
+			var formData = new FormData($(".formulario")[0]);
+			var message = "";
+			$.ajax({
+				url: '../../ajax/ajax.php',
+				type: 'POST',
+				// datos del formulario
+				data: formData,
+				//necesario para subir archivos via ajax
+				cache: false,
+				contentType: false,
+				processData: false,
+				//mientras enviamos el archivo
+				beforeSend: function(){
+					alert("Enviando datos...");
+				},
+				//una vez finalizado correctamente
+				success: function(data){
+					if (data == '') {
+						swal({
+								title: "Respuesta",
+								text: "Registro Creado con exito!!",
+								type: "success",
+								timer: 1500,
+								showConfirmButton: false
+						});
+
+						
+						$('#unidadnegocio').val('');
+						table.ajax.reload();
+					} else {
+						swal({
+								title: "Respuesta",
+								text: data,
+								type: "error",
+								timer: 2500,
+								showConfirmButton: false
+						});
+
+
+					}
+				},
+				//si ha ocurrido un error
+				error: function(){
+					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+					$("#load").html('');
+				}
+
+			});
+
+		});
+
 		$('.nuevo').click(function(){
 
 			//información del formulario
-			var formData = new FormData($(".formulario")[0]);
+			var formData = new FormData($(".formulario")[1]);
 			var message = "";
 			//hacemos la petición ajax
 			$.ajax({
@@ -543,7 +751,6 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 				},
 				//una vez finalizado correctamente
 				success: function(data){
-
 					if (data == '') {
 						swal({
 								title: "Respuesta",
@@ -555,7 +762,7 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 
 						$('#lgmNuevo').modal('hide');
 						$('#unidadnegocio').val('');
-						table.ajax.reload();
+						//table.ajax.reload();
 					} else {
 						swal({
 								title: "Respuesta",
@@ -631,6 +838,38 @@ $frmUnidadNegocios 	= $serviciosFunciones->camposTablaViejo($insertar ,$tabla,$l
 			});
 		});
 	});
+
+
+function frmAjaxinsertarSolicitud(id) {
+			$.ajax({
+				url: '../../ajax/ajax.php',
+				type: 'POST',
+				// Form data
+				//datos del formulario
+				data: {accion: 'frmAjaxinsertarSolicitud',tabla: '<?php echo $tabla; ?>', id: id},
+				//mientras enviamos el archivo
+				beforeSend: function(){
+					$('.frmAjaxModificar').html('');
+				},
+				//una vez finalizado correctamente
+				success: function(data){
+
+					if (data != '') {
+						$('.frmAjaxModificar').html(data);
+					} else {
+						swal("Error!", data, "warning");
+
+						$("#load").html('');
+					}
+				},
+				//si ha ocurrido un error
+				error: function(){
+					$(".alert").html('<strong>Error!</strong> Actualice la pagina');
+					$("#load").html('');
+				}
+			});
+
+		}
 </script>
 
 
